@@ -1,6 +1,6 @@
 angular.module('localytics.directives', [])
 
-angular.module('localytics.directives').directive 'chosen', ['$timeout', ($timeout) ->
+angular.module('localytics.directives').directive 'chosen', ->
 
   # This is stolen from Angular...
   NG_OPTIONS_REGEXP = /^\s*(.*?)(?:\s+as\s+(.*?))?(?:\s+group\s+by\s+(.*))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+(.*?)(?:\s+track\s+by\s+(.*?))?$/
@@ -94,16 +94,9 @@ angular.module('localytics.directives').directive 'chosen', ['$timeout', ($timeo
       valuesExpr = match[7]
 
       scope.$watchCollection valuesExpr, (newVal, oldVal) ->
-        # Defer execution until DOM is loaded
-        timer = $timeout(->
-          if angular.isUndefined(newVal)
-            startLoading()
-          else
-            removeEmptyMessage() if empty
-            stopLoading()
-            disableWithMessage() if isEmpty(newVal)
-        )
-
-      scope.$on '$destroy', (event) ->
-        $timeout.cancel timer if timer?
-]
+        if angular.isUndefined(newVal)
+          startLoading()
+        else
+          removeEmptyMessage() if empty
+          stopLoading()
+          disableWithMessage() if isEmpty(newVal)
